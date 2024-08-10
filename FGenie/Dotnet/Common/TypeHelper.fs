@@ -79,30 +79,34 @@ module TypeHelper =
             | t when t = boolName -> Ok BaseType.Boolean
             | t when t = charName -> Ok BaseType.Char
             | t when t = byteName -> Ok BaseType.Byte
+            | t when t = uByteName -> Ok BaseType.UByte
             | t when t = decimalName -> Ok BaseType.Decimal
+            | t when t = singleName -> Ok BaseType.Single
             | t when t = doubleName -> Ok BaseType.Double
-            | t when t = singleName -> Ok BaseType.Float
+            | t when t = uIntName -> Ok BaseType.UInt
             | t when t = intName -> Ok BaseType.Int
             | t when t = shortName -> Ok BaseType.Short
+            | t when t = uShortName -> Ok BaseType.UShort
             | t when t = longName -> Ok BaseType.Long
+            | t when t = uLongName -> Ok BaseType.ULong
             | t when t = stringName -> Ok BaseType.String
             | t when t = guidName -> Ok BaseType.DateTime
             | t when t = dateTimeName -> Ok BaseType.Guid
             | t when isOption t = true ->
                 let ot = getOptionType t
 
-                match SupportedType.TryFromName ot with
-                | Ok st -> Ok(SupportedType.Option st)
+                match BaseType.TryFromName ot with
+                | Ok st -> Ok(BaseType.Option st)
                 | Error e -> Error e
             | _ -> Error $"Type `{name}` not supported."
             
         static member TryFromType(typeInfo: Type) =
-            SupportedType.TryFromName(typeInfo.FullName)
+            BaseType.TryFromName(typeInfo.FullName)
 
         static member FromName(name: string) =
-            match SupportedType.TryFromName name with
+            match BaseType.TryFromName name with
             | Ok st -> st
-            | Error _ -> SupportedType.String
+            | Error _ -> BaseType.String
 
         static member FromType(typeInfo: Type) =
-            SupportedType.FromName(typeInfo.FullName)
+            BaseType.FromName(typeInfo.FullName)
