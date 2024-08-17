@@ -1,7 +1,9 @@
 namespace FGenie
 
 module Domain =
-     
+
+    open FsToolbox.Extensions.Strings
+
     [<RequireQualifiedAccess>]
     type Language =
         | FSharp
@@ -9,36 +11,38 @@ module Domain =
         | TypeScript
         | JavaScript
         | JSONSchema
-   
-    [<RequireQualifiedAccess>]
+
+    type NameType =
+        | Normalized of string
+        | Json of string
+        | Unknown of string
+
+        member nt.Normalize() =
+            match nt with
+            | Normalized s -> s
+            | Json s -> s.ToSnakeCase()
+            | Unknown s -> s.ToSnakeCase()
+
+        member nt.ToPascalCase() =
+            match nt with
+            | Normalized s -> s.ToPascalCase()
+            | Json s -> s.ToPascalCase()
+            | Unknown s -> s.ToPascalCase()
+
+        member nt.ToCamelCase() =
+            match nt with
+            | Normalized s -> s.ToCamelCase()
+            | Json s -> s
+            | Unknown s -> s.ToCamelCase()
+
     type ValueType =
-        | String
-        | Number
-        | Integer
-        | Object
-        | Array
-        | Boolean
-        | Null
-    
-        static member TryDeserialize(value: string) =
-            match value.ToLower() with
-            | "string" -> Some ValueType.String
-            | "number" -> Some ValueType.Number
-            | "integer" -> Some ValueType.Integer
-            | "object" -> Some ValueType.Object
-            | "array" -> Some ValueType.Array
-            | "boolean" -> Some ValueType.Boolean
-            | "null" -> Some ValueType.Null
-            | _ -> None
-        
-    type SupportedType =
         | Boolean
         | Byte
         | UByte
         | Char
         | Decimal
+        | Single
         | Double
-        | Float
         | Int
         | UInt
         | Short
@@ -48,37 +52,36 @@ module Domain =
         | String
         | DateTime
         | Guid
-        | Option of SupportedType
-    
-    
-    
-    type Schema =
-        { Uri: string
-          Type: string
-          Required: string list
-          Properties: Property list
-        }
+        | Option of ValueType
 
-    and Property =
-        { Name: string
-          Type: string
-          Description: string
-          MarkdownDescription: string }
+    [<RequireQualifiedAccess>]
+    type EntityType =
+        | Record of RecordType
+        | Union of UnionType
+        | Array of ArrayType
+        
+    and RecordType =
+        { Name: NameType
+          Fields: Field list
+          Metadata: Map<string, string> }
 
-    and AllOf = {
-        If: If
-        Then: Then
-    }
-    
-    and If = {
-        Properties: string
-        Required: string list
-    }
-    
-    and Then = {
-        Ref: string
-    }
-    
-    
-    
-    
+    and Field =
+        { Name: NameType
+          Value: FieldValue
+          Metadata: Map<string, string> }
+
+    and FieldValue =
+        | Entity of EntityType
+        | Value of ValueType
+
+    and UnionType =
+        { Entries: UnionEntry list
+          Metadata: Map<string, string> }
+
+    and UnionEntry =
+        { Name: NameType
+          Field: FieldValue
+          Metadata: Map<string, string> }
+
+
+    and ArrayType = { Type: FieldValue }
