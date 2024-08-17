@@ -1,15 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>
         <Compile Include="Common\Domain.fs" />
         <Compile Include="Common\Common.fs" />
         <Compile Include="Dotnet\Common\TypeHelper.fs" />
+        <Compile Include="Dotnet\Common\Shared.fs" />
+        <Compile Include="Dotnet\Common\Extensions.fs" />
         <Compile Include="Dotnet\FSharp\Mapping.fs" />
+        <Compile Include="Dotnet\FSharp\Generator.fs" />
+        <Compile Include="TypeScript\Common\Extensions.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FsToolbox" Version="0.9.3" />
     </ItemGroup>
 
 </Project>

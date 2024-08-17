@@ -4,6 +4,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FGenie", "FGenie\FGenie.fsp
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FGenie.App", "FGenie.App\FGenie.App.fsproj", "{0C48FFEE-E4BC-4DF5-A544-EAFA27CC1D95}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FGenie.OpenApi", "FGenie.OpenApi\FGenie.OpenApi.fsproj", "{DBBF743C-A6D5-4EBC-9735-0DEACD2F4840}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{0C48FFEE-E4BC-4DF5-A544-EAFA27CC1D95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C48FFEE-E4BC-4DF5-A544-EAFA27CC1D95}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C48FFEE-E4BC-4DF5-A544-EAFA27CC1D95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBBF743C-A6D5-4EBC-9735-0DEACD2F4840}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBBF743C-A6D5-4EBC-9735-0DEACD2F4840}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBBF743C-A6D5-4EBC-9735-0DEACD2F4840}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBBF743C-A6D5-4EBC-9735-0DEACD2F4840}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
