@@ -58,7 +58,11 @@ module Domain =
     type EntityType =
         | Record of RecordType
         | Union of UnionType
-        | Array of ArrayType
+        
+        member et.TryGetTypeName() =
+            match et with
+            | Record recordType -> Some recordType.Name
+            | Union unionType -> Some unionType.Name
         
     and RecordType =
         { Name: NameType
@@ -68,6 +72,7 @@ module Domain =
     and Field =
         { Name: NameType
           Value: FieldValue
+          IsCollection: bool
           Metadata: Map<string, string> }
 
     and FieldValue =
@@ -75,7 +80,8 @@ module Domain =
         | Value of ValueType
 
     and UnionType =
-        { Entries: UnionEntry list
+        { Name: NameType
+          Entries: UnionEntry list
           Metadata: Map<string, string> }
 
     and UnionEntry =

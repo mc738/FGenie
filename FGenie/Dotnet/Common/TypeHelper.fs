@@ -1,10 +1,14 @@
 namespace FGenie.Dotnet.Common
 
-open System
-open System.Text.RegularExpressions
+open System.Collections.Generic
+open FGenie.Domain
 
 module TypeHelper =
-    
+
+    open System
+    open System.Text.RegularExpressions
+    open FGenie.Domain
+
     let getName<'T> = typeof<'T>.FullName
 
     let typeName (t: Type) = t.FullName
@@ -52,7 +56,14 @@ module TypeHelper =
             .Match(value, "(?<=Microsoft.FSharp.Core.FSharpOption`1\[\[).+?(?=\,)")
             .Value
 
-    
+    let isCollectionType (t: Type) =
+        t.Name <> nameof (String) && t.GetInterface(nameof IEnumerable) <> null
+
+    let tryGetGenericTypeForCollection (t: Type) =
+        match isCollectionType t with
+        | true -> t.GenericTypeArguments |> Array.tryHead
+        | false -> None
+
     [<RequireQualifiedAccess>]
     type BaseType =
         | Boolean
@@ -99,14 +110,32 @@ module TypeHelper =
                 | Ok st -> Ok(BaseType.Option st)
                 | Error e -> Error e
             | _ -> Error $"Type `{name}` not supported."
-            
-        static member TryFromType(typeInfo: Type) =
-            BaseType.TryFromName(typeInfo.FullName)
+
+        static member TryFromType(typeInfo: Type) = BaseType.TryFromName(typeInfo.FullName)
 
         static member FromName(name: string) =
             match BaseType.TryFromName name with
             | Ok st -> st
             | Error _ -> BaseType.String
 
-        static member FromType(typeInfo: Type) =
-            BaseType.FromName(typeInfo.FullName)
+        static member FromType(typeInfo: Type) = BaseType.FromName(typeInfo.FullName)
+
+        member bt.ValueType =
+            match bt with
+            | Boolean -> ValueType.Boolean
+            | Byte -> ValueType.Byte
+            | UByte -> ValueType.UByte
+            | Char -> ValueType.Char
+            | Decimal -> ValueType.Decimal
+            | Single -> ValueType.Single
+            | Double -> ValueType.Double
+            | Int -> ValueType.Int
+            | UInt -> ValueType.UInt
+            | Short -> ValueType.Short
+            | UShort -> ValueType.UShort
+            | Long -> ValueType.Long
+            | ULong -> ValueType.ULong
+            | String -> ValueType.String
+            | DateTime -> ValueType.DateTime
+            | Guid -> ValueType.Guid
+            | Option baseType -> ValueType.Option baseType.ValueType
