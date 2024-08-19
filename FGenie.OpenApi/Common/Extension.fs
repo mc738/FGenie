@@ -8,7 +8,10 @@ module rec Extension =
 
     type ValueType with
 
-        member vt.ToOpenApiSchema() =
+        member vt.ToOpenApiSchema(?includeNull) =
+            let incNull = includeNull |> Option.defaultValue true
+            
+            
             let typeSchema = OpenApiSchema()
 
             match vt with
@@ -39,8 +42,12 @@ module rec Extension =
                 typeSchema.Format <- "date-time"
             | Guid -> typeSchema.Type <- "string"
             | Option valueType ->
-                typeSchema.AnyOf.Add(valueType.ToOpenApiSchema())
-                typeSchema.AnyOf.Add(nullSchema)
+                if incNull then
+                    typeSchema.AnyOf.Add(valueType.ToOpenApiSchema())
+                    typeSchema.AnyOf.Add(nullSchema)
+                else
+                    // TODO handle better?
+                    typeSchema.AnyOf.Add(valueType.ToOpenApiSchema(false))
 
             typeSchema
 
