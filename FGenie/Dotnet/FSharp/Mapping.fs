@@ -21,6 +21,10 @@ module rec Mapping =
         | UnhandledType of Type
 
         static member TryCreate(t: Type) =
+            // Note - check for the collection type first.
+            // FSharpType.IsUnion will return true for list types,
+            // which will cause issues.
+            // So call that after checking for collection types.
             match tryGetGenericTypeForCollection t with
             | Some value -> CategorizedType.Array <| CategorizedType.TryCreate value
             | None ->
@@ -83,7 +87,6 @@ module rec Mapping =
         : RecordType)
         |> Ok
 
-
     let getFromType (t: Type) =
         if FSharpType.IsRecord t then
             getRecord t |> Result.map EntityType.Record
@@ -93,7 +96,6 @@ module rec Mapping =
             failwith "TODO handle collections"
         else
             Error $"Type `{t.FullName}` is neither a FSharp record or union."
-
 
     let get<'T> () =
 
